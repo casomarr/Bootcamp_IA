@@ -1,0 +1,6 @@
+# Ignore virtual environment directory
+bootcamp/
+
+# Ignore other files and directories
+*.pyc
+__pycache__/
