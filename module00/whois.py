@@ -1,19 +1,20 @@
 import sys
 
-if len(sys.argv) != 2:
-  print("Error")
-  sys.exit(1)
-  
-try:
-  nb = int(sys.argv[1])
-except ValueError:
-  print("Error")
-  sys.exit(1)
-  
-if nb == 0:
-  print("The number is zero")
-elif nb%2 == 0:
-  print("The number is even")
-else:
-  print("The number is odd")
+if len(sys.argv) < 2:
+	sys.exit(1)
+if len(sys.argv) > 2:
+	print("AssertionError: more than one argument are provided")
+	sys.exit(1)
 
+try:
+	number = int(sys.argv[1])
+except ValueError:
+	print("AssertionError: argument is not an integer")
+	sys.exit(1)
+
+if number == 0:
+	print("I'm Zero.")
+elif number%2 == 0:
+	print("I'm Even.")
+else:
+	print("I'm Odd.")
