@@ -12,9 +12,12 @@ def generator(text, sep=" ", option=None):
 	splitted_list = text.split(sep)
 
 	if option == "shuffle":
-		random.shuffle(splitted_list)
-		to_print = splitted_list # after it has been shuffled. 
-		#I cannot do "to_print = random.shuffle(splitted_list)" directly because random.shuffle() returns None
+		i = 0
+		to_print = []
+		for i in range(len(splitted_list)):
+			random_index = random.randrange(len(splitted_list))
+			to_print.append(splitted_list.pop(random_index))
+			i+=1
 	elif option == "unique":
 		splitted_set = set(splitted_list) # converts the list to a set because this automatically removes all duplicate elements
 		to_print = list(splitted_set) # converts the set back to a list to have the right format
