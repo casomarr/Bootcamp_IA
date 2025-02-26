@@ -1,4 +1,6 @@
 import numpy
+import matplotlib.pyplot as plt
+from PIL import Image
 
 """ When specifying positions or dimensions, we will assume that the first
 coordinate is counted along the vertical axis starting from the top, and that the second
@@ -37,7 +39,7 @@ class ScrapBooker:
 		# 	. . . ─ ─ . .
 
 		# if not isinstance(array, numpy.ndarray) or array.size == 0:
-		if not hasattr(img, 'shape'):
+		if not isinstance(array, numpy.ndarray) or array.size == 0:
 			print("Not a numpy array")
 			return None
 		if (not isinstance(dim, tuple) or not all(isinstance(nb, int) for nb in dim) or
@@ -79,7 +81,7 @@ class ScrapBooker:
 		------
 			This function should not raise any Exception.
 		"""
-		if not hasattr(img, 'shape'):
+		if not isinstance(array, numpy.ndarray) or array.size == 0:
 			print("Not a numpy array")
 			return None
 		if not isinstance(n, int) or n <= 0:
@@ -115,7 +117,18 @@ class ScrapBooker:
 		-------
 			This function should not raise any Exception.
 		"""
-		# ... your code ...
+		if not isinstance(array, numpy.ndarray) or array.size == 0:
+			print("Not a numpy array")
+			return None
+		if not isinstance(n, int) or n <= 0:
+			print("n is not a positive int")
+			return None
+		if axis not in (0, 1):
+			print("invalid axis: only 0 (horizontal) and 1 (vertical) accepted")
+			return None
+
+		new_array = numpy.concatenate([array] * n, axis)
+		return new_array
 
 	def mosaic(self, array, dim):
 		"""
@@ -133,11 +146,16 @@ class ScrapBooker:
 		-------
 			This function should not raise any Exception.
 		"""
-		# ... your code ...
-
-
-import matplotlib.pyplot as plt
-from PIL import Image
+		if not isinstance(array, numpy.ndarray) or array.size == 0:
+			print("Not a numpy array")
+			return None
+		if not isinstance(dim, tuple) or not all(isinstance(nb, int) for nb in dim):
+			print("n is not a positive int")
+			return None
+		
+		intermediate_array = numpy.concatenate([array] * dim[0], 0)
+		new_array = numpy.concatenate([intermediate_array] * dim[1], 1)
+		return new_array
 
 #since python does not support to add functions from relative paths, to simplify,
 #I just copied/paste what I learned from ex01 here:
@@ -171,7 +189,7 @@ try:
 		print("img croped")
 		
 		if croped_img is not None:
-			new_img = Image.fromarray((croped_img * 255).astype(numpy.uint8))
+			new_img = Image.fromarray((croped_img * 255))
 			new_img.show()
 except Exception as e:
 	print(f"Error: {e}")
@@ -179,7 +197,7 @@ except Exception as e:
 
 try:
 	sb = ScrapBooker()
-	image = Image.open("muffins.png") #or image = plt.imread("muffins.png") + new_img = Image.fromarray((image * 255).astype(numpy.uint8))
+	image = Image.open("muffins.png") #or image = plt.imread("muffins.png") + new_img = Image.fromarray((image * 255))
 	print("img type:", type(img))
 	if img is not None:
 		#reduced size for visibility
@@ -192,24 +210,49 @@ try:
 		new_image = sb.thin(resized_array, 2, 0)
 		print("img thined")
 		if new_image is not None:
-			Image.fromarray(new_image.astype(numpy.uint8)).show()
-			# new_img = Image.fromarray((new_image * 255).astype(numpy.uint8))
+			Image.fromarray(new_image).show()
+			# new_img = Image.fromarray((new_image * 255))
+except Exception as e:
+	print(f"Error: {e}")
+
+try:
+	sb = ScrapBooker()
+	image = Image.open("muffins.png") #or image = plt.imread("muffins.png") + new_img = Image.fromarray((image * 255))
+	print("img type:", type(img))
+	if img is not None:
+		#reduced size for visibility
+		new_size = (image.width // 4, image.height // 4)
+		resized_image = image.resize(new_size, Image.LANCZOS)
+		print("img resized")
+		resized_array = numpy.array(resized_image)
+		print("img type:", type(resized_array))
+
+		# Axis 0 = Rows Direction (Vertical Stacking) --> juxtapose in axis=0
+		# means we add rows (and therefore the new image will be added underneeth)
+		# Axis 1 = Columns Direction (Horizontal Stacking)
+		new_image = sb.juxtapose(resized_array, 3, 1)
+		print("img juxtaposed")
+		if new_image is not None:
+			Image.fromarray(new_image).show()
 except Exception as e:
 	print(f"Error: {e}")
 
 
-
-
-""" # Create a sample image (10x10)
-img = numpy.zeros((10, 10))
-
-# Print img and its type
-print("img before crop:", img)
-print("Type of img:", type(img))
-
-# Call the crop function
 try:
-    croped_img = ScrapBooker.crop(img, size=(5, 5), position=(2, 2))
-    print("Cropped Image:\n", croped_img)
+	sb = ScrapBooker()
+	image = Image.open("muffins.png") #or image = plt.imread("muffins.png")
+	print("img type:", type(img))
+	if img is not None:
+		#reduced size for visibility
+		new_size = (image.width // 4, image.height // 4)
+		resized_image = image.resize(new_size, Image.LANCZOS)
+		print("img resized")
+		resized_array = numpy.array(resized_image)
+		print("img type:", type(resized_array))
+
+		new_image = sb.mosaic(resized_array, (2,3))
+		print("img mosaic")
+		if new_image is not None:
+			Image.fromarray(new_image).show()
 except Exception as e:
-    print("Error:", e) """
+	print(f"Error: {e}")

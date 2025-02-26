@@ -15,14 +15,13 @@ class ImageProcessor:
 	
 	@staticmethod
 	def display(array):
-		# if not isinstance(array, numpy.ndarray) or array.size == 0: #checks are a bit different for numpy arrays
-		if not hasattr(img, 'shape') or array.size == 0:
+		if not isinstance(array, numpy.ndarray) or array.size == 0: #checks are a bit different for numpy arrays
 			print("Error: not a numpy array")
 			return None
 		# plt.imshow(array)
 		# plt.show()
 		try:
-			image = Image.fromarray((array * 255).astype(numpy.uint8))  # Convert to uint8 if needed
+			image = Image.fromarray((array * 255).astype(numpy.uint8))  # we convert the Numpy array back to an image so that it can be shown
 			image.show()
 		except Exception as e:
 			print(f"Error displaying image: {e}")
