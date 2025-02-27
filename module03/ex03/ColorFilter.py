@@ -22,6 +22,10 @@ class ColorFilter:
 			print("Not a numpy array")
 			return None
 		
+		if array.ndim != 3 or array.shape[2] not in [3, 4]:
+			print("Array must have 3 dimensions and 3 or 4 channels") #flamingo img does not work but arcoiris does
+			return None
+		
 		# red = array[:, :, 0]
 		# green = array[:, :, 1]
 		# blue = array[:, :, 2]
@@ -30,6 +34,18 @@ class ColorFilter:
 		# print(f"red value: {red}")
 
 		height, width, channels = array.shape
+
+# The difference in the shape of images (different number of channels) can be due to several reasons :
+# 1. Image Mode: 
+# 		The mode of the image (e.g., RGB, RGBA, L) determines the number of channels. 
+# 		Ex: an RGB image has 3 channels, an RGBA image has 4 channels, a grayscale image (mode L) has only one channel.
+# 2. Image Metadata: 
+# 		The metadata of the image file might specify different modes or channels. 
+# 		Ex: an image can be saved as grayscale, RGB or RGBA.
+# 3. Image Library Behavior: 
+# 		Different libraries or versions might handle image loading differently. 
+# 		Ex: Pillow might load an image with an alpha channel, while matplotlib might not. 
+
 		inverted_image = array.copy()
 
 		for y in range(height): #rajouter range sinon height est juste un int et donc non iterable
@@ -169,12 +185,12 @@ if array is not None:
 	new_image = cf.invert(array)
 	if new_image is not None:
 		Image.fromarray(new_image.astype(np.uint8)).show()
-	# new_image = cf.to_blue(array)
-	# if new_image is not None:
-	# 	Image.fromarray(new_image.astype(np.uint8)).show()
-	# new_image = cf.to_green(array)
-	# if new_image is not None:
-	# 	Image.fromarray(new_image.astype(np.uint8)).show()
-	# new_image = cf.to_red(array)
-	# if new_image is not None:
-	# 	Image.fromarray(new_image.astype(np.uint8)).show()
+	new_image = cf.to_blue(array)
+	if new_image is not None:
+		Image.fromarray(new_image.astype(np.uint8)).show()
+	new_image = cf.to_green(array)
+	if new_image is not None:
+		Image.fromarray(new_image.astype(np.uint8)).show()
+	new_image = cf.to_red(array)
+	if new_image is not None:
+		Image.fromarray(new_image.astype(np.uint8)).show()
